@@ -9,9 +9,10 @@ class TouchPanel {
 
   constructor(scene: Phaser.Scene) {
     scene.add
-      .circle(this.x, this.y, 30, 0xFFFFFF, 0.6)
+      .circle(this.x, this.y, 40, 0xFFFFFF, 0.6)
       .setInteractive()
       .on("pointermove", (e: PointerEvent) => this.move(e.x, e.y))
+      .on("pointerout", () => { this.move(this.x, this.y) })
 
     this.stick = scene.add.circle(this.x, this.y, 10, 0xFFFFFF)
   }
