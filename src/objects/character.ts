@@ -2,10 +2,12 @@ import { WIDTH, HEIGHT } from "../constants"
 import { Collidable } from "./collidable"
 
 class Character extends Collidable {
-  private speed = 100
+  private hp = 3
 
   constructor(scene: Phaser.Scene) {
     super(scene, WIDTH / 2, HEIGHT / 2, "character")
+
+    this.body.setCollideWorldBounds(true)
   }
 
   move(velocity: any) {
@@ -14,8 +16,13 @@ class Character extends Collidable {
     this.body.setVelocity(-x, -y)
   }
 
-  die() {
+  // TODO
+  damaged() {
 
+  }
+
+  isDead(): boolean {
+    return this.hp <= 0
   }
 }
 
