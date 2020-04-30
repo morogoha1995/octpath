@@ -8,7 +8,12 @@ class Shark extends Enemy {
     this.speed = 120
     this.bulletSpeed = 120
     this.firingSpeed = 1500
-    this.hp = 3
+  }
+
+  attack(characterX: number, characterY: number): Bullet {
+    const bullet = super.attack(characterX, characterY)
+    bullet.setDisplaySize(40, 40)
+    return bullet
   }
 }
 

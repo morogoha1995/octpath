@@ -7,7 +7,6 @@ class Enemy extends Collidable {
   protected bulletSpeed = 100
   protected firingSpeed = 2000
   private nextFiring = 0
-  protected hp = 1
 
   constructor(scene: Phaser.Scene, texture: string) {
     super(scene, Phaser.Math.Between(0, WIDTH), 0, texture)
@@ -32,14 +31,14 @@ class Enemy extends Collidable {
     return this.scene.time.now > this.nextFiring
   }
 
-  private isDead(): boolean {
-    return this.hp <= 0
-  }
-
-  private die() {
+  die() {
+    this.body.checkCollision.none = true
+    this.body.setVelocity(0, 0)
     this.scene.add.tween({
+      targets: this,
       duration: 1000,
-      alpha: 0
+      alpha: 0,
+      onComplete: () => this.destroy()
     })
   }
 }

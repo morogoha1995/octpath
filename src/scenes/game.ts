@@ -9,11 +9,13 @@ import { Squid } from "../objects/squid"
 
 class Game extends Phaser.Scene {
   private character!: Character
+  private characterBullets!: Phaser.GameObjects.Group
   private enemies!: Phaser.GameObjects.Group
   private enemyBullets!: Phaser.GameObjects.Group
   private touchPanel!: TouchPanel
   private isStart = true
-  private plusPopCount = 0
+  private difficulty = 1
+  private nextSpawnEnemy = 0
 
   constructor() {
     super({ key: "game" })
@@ -22,17 +24,13 @@ class Game extends Phaser.Scene {
   create() {
     this.add.image(0, 0, "bg").setOrigin(0)
     this.character = new Character(this)
+    this.characterBullets = this.add.group({ runChildUpdate: true })
     this.enemies = this.add.group({ runChildUpdate: true })
     this.enemyBullets = this.add.group({ runChildUpdate: true })
     this.touchPanel = new TouchPanel(this)
 
-    this.physics.add.overlap(this.character, this.enemyBullets, this.charOverlapEnemy, undefined, this)
-
-    this.time.addEvent({
-      delay: 3000,
-      loop: true,
-      callback: () => this.makeEnemies()
-    })
+    this.physics.add.overlap(this.character, this.enemyBullets, this.hitEnemyBulletsToCharacter, undefined, this)
+    this.physics.add.overlap(this.characterBullets, this.enemies, this.hitCharacterBulletsToEnemy, undefined, this)
 
     this.time.addEvent({
       delay: 30000,
@@ -47,11 +45,24 @@ class Game extends Phaser.Scene {
     if (!this.isStart)
       return
 
-    this.character.move(this.touchPanel.getVelocity())
-    this.checkEnemiesAttack()
+
+    this.updateCharacter()
+    this.updateEnemies()
   }
 
-  private checkEnemiesAttack() {
+  private updateCharacter() {
+    this.character.move(this.touchPanel.getVelocity())
+
+    if (this.character.canAttack())
+      this.characterBullets.add(this.character.attack())
+  }
+
+  private updateEnemies() {
+    this.enemiesAttack()
+    this.spawnEnemy()
+  }
+
+  private enemiesAttack() {
     const characterX = this.character.x
     const characterY = this.character.y
     this.enemies.children.iterate((e: any) => {
@@ -61,27 +72,31 @@ class Game extends Phaser.Scene {
   }
 
   private upDefficulty() {
-    if (this.plusPopCount < 3)
-      this.plusPopCount++
+    if (this.difficulty < 3)
+      this.difficulty++
   }
 
-  private makeEnemies() {
-    // 何体生成するか
-    const min = 1 + this.plusPopCount
-    const max = 5 + this.plusPopCount
-    const count = Phaser.Math.Between(min, max)
+  private spawnEnemy() {
+    if (!this.canSpawnEnemy())
+      return
 
+    const enemyNum = Phaser.Math.Between(1, 10)
     let enemy: Enemy;
-    for (let i = 0; i < count; i++) {
-      const enemyNum = Phaser.Math.Between(1, 10)
+    if (enemyNum > 7)
+      enemy = new Shark(this)
+    else
+      enemy = new Squid(this)
 
-      if (enemyNum > 7)
-        enemy = new Shark(this)
-      else
-        enemy = new Squid(this)
+    this.enemies.add(enemy)
+    this.calcNextSpawnEnemy()
+  }
 
-      this.enemies.add(enemy)
-    }
+  private canSpawnEnemy(): boolean {
+    return this.time.now > this.nextSpawnEnemy
+  }
+
+  private calcNextSpawnEnemy() {
+    this.nextSpawnEnemy = this.time.now + Math.floor(3000 / this.difficulty)
   }
 
   // TODO
@@ -98,8 +113,13 @@ class Game extends Phaser.Scene {
   }
 
   // TODO
-  private charOverlapEnemy() {
+  private hitEnemyBulletsToCharacter(c: any, e: any) {
     console.log("hit")
+  }
+
+  private hitCharacterBulletsToEnemy(cb: any, e: any) {
+    cb.destroy()
+    e.die()
   }
 }
 
