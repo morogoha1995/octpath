@@ -5,7 +5,7 @@ import { Bullet } from "./bullet"
 class Enemy extends Collidable {
   protected speed = 60
   protected bulletSpeed = 100
-  protected firingSpeed = 2000
+  protected firingSpeed = 1800
   private nextFiring = 0
 
   constructor(scene: Phaser.Scene, texture: string) {

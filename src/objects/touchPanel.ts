@@ -14,7 +14,7 @@ class TouchPanel {
       .on("pointermove", (e: PointerEvent) => this.move(e.x, e.y))
       .on("pointerout", () => { this.move(this.x, this.y) })
 
-    this.stick = scene.add.circle(this.x, this.y, 24, 0xFFFFFF)
+    this.stick = scene.add.circle(this.x, this.y, 24, 0xFFDF9F, 0.6)
   }
 
   getVelocity() {

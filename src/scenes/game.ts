@@ -53,8 +53,11 @@ class Game extends Phaser.Scene {
   private updateCharacter() {
     this.character.move(this.touchPanel.getVelocity())
 
-    if (this.character.canAttack())
-      this.characterBullets.add(this.character.attack())
+    if (this.character.canAttack()) {
+      const bullets = this.character.attack()
+      for (const b of bullets)
+        this.characterBullets.add(b)
+    }
   }
 
   private updateEnemies() {
