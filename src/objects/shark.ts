@@ -6,8 +6,8 @@ class Shark extends Enemy {
     super(scene, "shark")
 
     this.speed = 120
-    this.bulletSpeed = 70
-    this.firingSpeed = 2400
+    this.bulletSpeed = 50
+    this.firingInterval = 2400
   }
 
   attack(characterX: number, characterY: number): Bullet {

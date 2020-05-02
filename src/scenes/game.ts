@@ -6,12 +6,14 @@ import { TextBtn } from "../objects/textBtn"
 import { WIDTH, HEIGHT } from "../constants"
 import { Shark } from "../objects/shark"
 import { Squid } from "../objects/squid"
+import { Item } from "../objects/item"
 
 class Game extends Phaser.Scene {
   private character!: Character
   private characterBullets!: Phaser.GameObjects.Group
   private enemies!: Phaser.GameObjects.Group
   private enemyBullets!: Phaser.GameObjects.Group
+  private items!: Phaser.GameObjects.Group
   private touchPanel!: TouchPanel
   private isStart = true
   private difficulty = 1
@@ -22,18 +24,20 @@ class Game extends Phaser.Scene {
   }
 
   create() {
-    this.add.image(0, 0, "bg").setOrigin(0)
+    this.add.image(0, 0, "bg").setOrigin(0).setAlpha(0.8)
     this.character = new Character(this)
     this.characterBullets = this.add.group({ runChildUpdate: true })
     this.enemies = this.add.group({ runChildUpdate: true })
     this.enemyBullets = this.add.group({ runChildUpdate: true })
+    this.items = this.add.group({ runChildUpdate: true })
     this.touchPanel = new TouchPanel(this)
 
     this.physics.add.overlap(this.character, this.enemyBullets, this.hitEnemyBulletsToCharacter, undefined, this)
     this.physics.add.overlap(this.characterBullets, this.enemies, this.hitCharacterBulletsToEnemy, undefined, this)
+    this.physics.add.overlap(this.character, this.items, this.getItem, undefined, this)
 
     this.time.addEvent({
-      delay: 30000,
+      delay: 10000,
       loop: true,
       callback: () => this.upDefficulty()
     })
@@ -48,6 +52,11 @@ class Game extends Phaser.Scene {
 
     this.updateCharacter()
     this.updateEnemies()
+  }
+
+  private getItem(_: any, item: any) {
+    this.character.upgrade(item.getContent())
+    item.destroy()
   }
 
   private updateCharacter() {
@@ -75,6 +84,8 @@ class Game extends Phaser.Scene {
   }
 
   private upDefficulty() {
+    this.items.add(new Item(this))
+
     if (this.difficulty < 3)
       this.difficulty++
   }
@@ -84,7 +95,7 @@ class Game extends Phaser.Scene {
       return
 
     const enemyNum = Phaser.Math.Between(1, 10)
-    let enemy: Enemy;
+    let enemy: Enemy
     if (enemyNum > 7)
       enemy = new Shark(this)
     else

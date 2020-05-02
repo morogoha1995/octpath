@@ -11,6 +11,9 @@ class Boot extends Phaser.Scene {
       .image("enemy", "assets/imgs/enemy.png")
       .image("bullet", "assets/imgs/bullet.png")
       .image("enemyBullet", "assets/imgs/enemy-bullet.png")
+      .image("enlarge", "assets/imgs/items/enlarge.png")
+      .image("firingSpeed", "assets/imgs/items/firing-speed.png")
+      .image("scatter", "assets/imgs/items/scatter.png")
   }
 
   create() {

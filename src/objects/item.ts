@@ -1,9 +1,10 @@
 import { Collidable } from "./collidable"
 import { WIDTH } from "../constants"
+import { ItemContent } from "../../types/item"
 
 class Item extends Collidable {
-  private content = "firingSpeed"
-  private speed = 300
+  private content: ItemContent = "firingSpeed"
+  private speed = 30
 
   constructor(scene: Phaser.Scene) {
     super(scene, Phaser.Math.Between(0, WIDTH), 0, "")
@@ -14,17 +15,15 @@ class Item extends Collidable {
     this.body.setVelocity(0, this.speed)
   }
 
-  private setContent(): string {
+  private setContent() {
     const itemNum = Phaser.Math.Between(0, 2)
     if (itemNum === 1)
       this.content = "scatter"
     else if (itemNum === 2)
       this.content = "enlarge"
-
-    return this.content
   }
 
-  getContent(): string {
+  getContent(): ItemContent {
     return this.content
   }
 }
