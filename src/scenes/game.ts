@@ -60,7 +60,7 @@ class Game extends Phaser.Scene {
   }
 
   private updateCharacter() {
-    this.character.move(this.touchPanel.getVelocity())
+    this.character.move(this.touchPanel.getDirection())
 
     if (this.character.canAttack()) {
       const bullets = this.character.attack()
@@ -128,12 +128,22 @@ class Game extends Phaser.Scene {
 
   // TODO
   private hitEnemyBulletsToCharacter(c: any, e: any) {
-    console.log("hit")
+    if (c.isHurting)
+      return
+
+    c.damaged()
+
+    if (c.isDead())
+      this.gameover()
   }
 
   private hitCharacterBulletsToEnemy(cb: any, e: any) {
     cb.destroy()
     e.die()
+  }
+
+  private gameover() {
+    console.log("gameover")
   }
 }
 

@@ -5,6 +5,7 @@ import { ItemContent } from "../../types/item"
 
 class Character extends Collidable {
   private hp = 3
+  private velocity = 200
   private nextFiring = 0
   private bulletVelocityY = 300
   private items: any = {
@@ -12,6 +13,7 @@ class Character extends Collidable {
     scatter: 0,
     enlarge: 0,
   }
+  private isHurting = false
 
   constructor(scene: Phaser.Scene) {
     super(scene, WIDTH / 2, HEIGHT / 2, "character")
@@ -52,15 +54,34 @@ class Character extends Collidable {
     return this.scene.time.now > this.nextFiring
   }
 
-  move(velocity: any) {
-    const x = velocity.x * 10
-    const y = velocity.y * 10
-    this.body.setVelocity(-x, -y)
+  move(direction: any) {
+    let vx = 0
+    let vy = 0
+    if (direction.right)
+      vx = this.velocity
+    else if (direction.left)
+      vx = -this.velocity
+
+    if (direction.down)
+      vy = this.velocity
+    else if (direction.up)
+      vy = -this.velocity
+
+    this.body.setVelocity(vx, vy)
   }
 
-  // TODO
   damaged() {
+    this.hp--
+    this.isHurting = true
 
+    this.scene.add.tween({
+      targets: this,
+      duration: 200,
+      alpha: 0,
+      repeat: 2,
+      yoyo: true,
+      onComplete: () => this.isHurting = false
+    })
   }
 
   upgrade(itemContent: ItemContent) {

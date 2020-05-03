@@ -10,7 +10,10 @@ class Item extends Collidable {
     super(scene, Phaser.Math.Between(0, WIDTH), 0, "")
 
     this.setContent()
-    this.setTexture(this.content)
+
+    this
+      .setTexture(this.content)
+      .setDepth(8)
 
     this.body.setVelocity(0, this.speed)
   }
