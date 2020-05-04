@@ -4,7 +4,7 @@ import { Bullet } from "./bullet"
 import { ItemContent } from "../../types/item"
 
 class Character extends Collidable {
-  private hp = 3
+  private hp = 1
   private velocity = 200
   private nextFiring = 0
   private bulletVelocityY = 300
@@ -76,12 +76,16 @@ class Character extends Collidable {
 
     this.scene.add.tween({
       targets: this,
-      duration: 200,
+      duration: 80,
       alpha: 0,
-      repeat: 2,
+      repeat: 4,
       yoyo: true,
       onComplete: () => this.isHurting = false
     })
+  }
+
+  getIsHurting(): boolean {
+    return this.isHurting
   }
 
   upgrade(itemContent: ItemContent) {

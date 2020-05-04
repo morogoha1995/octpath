@@ -7,6 +7,7 @@ import { WIDTH, HEIGHT } from "../constants"
 import { Shark } from "../objects/shark"
 import { Squid } from "../objects/squid"
 import { Item } from "../objects/item"
+import { SoundBtn } from "../objects/soundBtn"
 
 class Game extends Phaser.Scene {
   private character!: Character
@@ -15,9 +16,10 @@ class Game extends Phaser.Scene {
   private enemyBullets!: Phaser.GameObjects.Group
   private items!: Phaser.GameObjects.Group
   private touchPanel!: TouchPanel
-  private isStart = true
+  private isPlaying = true
   private difficulty = 1
   private nextSpawnEnemy = 0
+  private isMute = false
 
   constructor() {
     super({ key: "game" })
@@ -36,17 +38,17 @@ class Game extends Phaser.Scene {
     this.physics.add.overlap(this.characterBullets, this.enemies, this.hitCharacterBulletsToEnemy, undefined, this)
     this.physics.add.overlap(this.character, this.items, this.getItem, undefined, this)
 
-    this.time.addEvent({
-      delay: 10000,
-      loop: true,
-      callback: () => this.upDefficulty()
-    })
-
     this.physics.world.setBounds(0, 0, WIDTH, HEIGHT)
+
+    this.start()
+  }
+
+  init(data: any) {
+    this.isMute = data.isMute || false
   }
 
   update() {
-    if (!this.isStart)
+    if (!this.isPlaying)
       return
 
 
@@ -113,24 +115,41 @@ class Game extends Phaser.Scene {
     this.nextSpawnEnemy = this.time.now + Math.floor(3000 / this.difficulty)
   }
 
-  // TODO
-  private createTexts(text: string, color: string, startText: string) {
-    const objs: any = []
+  private createTexts() {
+    const titleText = new TitleText(this, 120, "GAME OVER", "teal")
 
-    new TitleText(this, text, color)
+    const btnY = 200
+    new TextBtn(this, 120, btnY, "もう一回", "blue")
+      .on("pointerdown", () => this.restart(titleText))
 
-    const startBtn = new TextBtn(this, 120, 200, "スタート", "blue")
+    const soundBtn = new SoundBtn(this, btnY, this.isMute)
+      .on("pointerdown", () => {
+        this.isMute = !this.isMute
+        soundBtn.switch(this.isMute)
+      })
 
-    const soundBtn = new TextBtn(this, 260, 200, "音", "teal")
-
-    const tweetBtn = new TextBtn(this, WIDTH / 2, 300, "ツイートする", "royalblue")
+    new TextBtn(this, WIDTH / 2, 300, "ツイートする", "royalblue")
   }
 
-  // TODO
-  private hitEnemyBulletsToCharacter(c: any, e: any) {
-    if (c.isHurting)
+  private restart(titleText: TitleText) {
+    this.add.tween({
+      targets: titleText,
+      alpha: 0,
+      duration: 200,
+      repeat: 3,
+      onComplete: () => this.scene.restart({ isMute: this.isMute })
+    })
+  }
+
+  private switchMute() {
+
+  }
+
+  private hitEnemyBulletsToCharacter(c: any, eb: any) {
+    if (c.getIsHurting())
       return
 
+    eb.destroy()
     c.damaged()
 
     if (c.isDead())
@@ -142,8 +161,21 @@ class Game extends Phaser.Scene {
     e.die()
   }
 
+  private start() {
+    this.time.addEvent({
+      delay: 15000,
+      loop: true,
+      callback: () => this.upDefficulty()
+    })
+
+    this.isPlaying = true
+  }
+
   private gameover() {
-    console.log("gameover")
+    this.isPlaying = false
+    this.physics.pause()
+    this.time.removeAllEvents()
+    this.createTexts()
   }
 }
 

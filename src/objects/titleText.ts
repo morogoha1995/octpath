@@ -1,8 +1,8 @@
 import { WIDTH } from "../constants"
 
 class TitleText extends Phaser.GameObjects.Text {
-  constructor(scene: Phaser.Scene, title: string, color: string) {
-    super(scene, WIDTH / 2, 120, title, {
+  constructor(scene: Phaser.Scene, y: number, title: string, color: string) {
+    super(scene, WIDTH / 2, y, title, {
       color: color,
       stroke: "white",
       strokeThickness: 6,
