@@ -1,14 +1,14 @@
 import { WIDTH, HEIGHT } from "../constants"
 import { Collidable } from "./collidable"
 import { Bullet } from "./bullet"
-import { ItemContent } from "../../types/item"
+import { ItemContent, CharacterStatus } from "../../types/item"
 
 class Character extends Collidable {
   private hp = 1
   private velocity = 200
   private nextFiring = 0
   private bulletVelocityY = 300
-  private items: any = {
+  private status: any = {
     firingSpeed: 0,
     scatter: 0,
     enlarge: 0,
@@ -24,8 +24,8 @@ class Character extends Collidable {
 
   attack(): Bullet[] {
     const bullets: Bullet[] = []
-    const bulletSize = 12 + (4 * this.items.enlarge)
-    const bulletCounts = 1 + (2 * this.items.scatter)
+    const bulletSize = 12 + (4 * this.status.enlarge)
+    const bulletCounts = 1 + (2 * this.status.scatter)
     const baseVx = bulletCounts === 1 ? 0 : 20
     const maxVx = baseVx * bulletCounts
     const vxMargin = maxVx * 2 / bulletCounts
@@ -46,7 +46,7 @@ class Character extends Collidable {
   }
 
   private calcNextFiring() {
-    const reloadTime = 300 - (50 * this.items.firingSpeed)
+    const reloadTime = 300 - (50 * this.status.firingSpeed)
     this.nextFiring = this.scene.time.now + Math.floor(reloadTime)
   }
 
@@ -90,14 +90,18 @@ class Character extends Collidable {
 
   upgrade(itemContent: ItemContent) {
     const maxGrade = 2
-    if (this.items[itemContent] === maxGrade)
+    if (this.status[itemContent] === maxGrade)
       return
 
-    this.items[itemContent] += 1
+    this.status[itemContent] += 1
   }
 
   isDead(): boolean {
     return this.hp <= 0
+  }
+
+  getStatus(): CharacterStatus {
+    return this.status
   }
 }
 
