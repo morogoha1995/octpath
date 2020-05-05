@@ -88,16 +88,22 @@ class Character extends Collidable {
     return this.isHurting
   }
 
-  upgrade(itemContent: ItemContent) {
-    const maxGrade = 2
-    if (this.status[itemContent] === maxGrade)
-      return
+  // アイテムに対応するステータスをアップグレードする。
+  // 返り値はアップグレードが成功したか否か。既にステータスが最大値であれば失敗する（falseが返る）。
+  upgrade(itemContent: ItemContent): boolean {
+    if (this.isMaxGrade(itemContent))
+      return false
 
     this.status[itemContent] += 1
+    return true
   }
 
   isDead(): boolean {
     return this.hp <= 0
+  }
+
+  private isMaxGrade(key: ItemContent): boolean {
+    return this.status[key] === 3
   }
 
   getStatus(key: ItemContent): number {

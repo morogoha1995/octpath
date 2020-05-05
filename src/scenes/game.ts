@@ -19,7 +19,7 @@ class Game extends Phaser.Scene {
   private items!: Phaser.GameObjects.Group
   private touchPanel!: TouchPanel
   private score!: Score
-  private status!: StatusDisplay
+  private statusDisplay!: StatusDisplay
   private isPlaying = true
   private difficulty = 1
   private nextSpawnEnemy = 0
@@ -38,7 +38,7 @@ class Game extends Phaser.Scene {
     this.items = this.add.group({ runChildUpdate: true })
     this.touchPanel = new TouchPanel(this)
     this.score = new Score(this)
-    this.status = new StatusDisplay(this, this.character.getAllStatus())
+    this.statusDisplay = new StatusDisplay(this, this.character.getAllStatus())
 
     this.physics.add.overlap(this.character, this.enemyBullets, this.hitEnemyBulletsToCharacter, undefined, this)
     this.physics.add.overlap(this.characterBullets, this.enemies, this.hitCharacterBulletsToEnemy, undefined, this)
@@ -65,8 +65,10 @@ class Game extends Phaser.Scene {
   private getItem(c: any, item: any) {
     const itemContent = item.getContent()
 
-    c.upgrade(itemContent)
-    this.status.update(itemContent, c.getStatus(itemContent))
+    if (c.upgrade(itemContent))
+      this.statusDisplay.update(itemContent, c.getStatus(itemContent))
+    else
+      this.score.add(1000)
 
     item.destroy()
   }
@@ -82,8 +84,8 @@ class Game extends Phaser.Scene {
   }
 
   private updateEnemies() {
-    this.enemiesAttack()
     this.spawnEnemy()
+    this.enemiesAttack()
   }
 
   private enemiesAttack() {
@@ -175,7 +177,7 @@ class Game extends Phaser.Scene {
   private hitCharacterBulletsToEnemy(cb: any, e: any) {
     cb.destroy()
     e.die()
-    this.score.update(e.getScore())
+    this.score.add(e.getScore())
   }
 
   private start() {

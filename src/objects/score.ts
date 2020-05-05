@@ -11,8 +11,8 @@ class Score {
     this.setDisplay(0)
   }
 
-  update(newScore: number) {
-    this.current += newScore
+  add(value: number) {
+    this.current += value
     this.setDisplay(this.current)
   }
 

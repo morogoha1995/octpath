@@ -8,6 +8,7 @@ class Enemy extends Collidable {
   protected firingInterval = 1800
   protected score = 0
   private nextFiring = 0
+  private isDying = false
 
   constructor(scene: Phaser.Scene, texture: string) {
     super(scene, Phaser.Math.Between(0, WIDTH), 0, texture)
@@ -26,12 +27,13 @@ class Enemy extends Collidable {
   }
 
   canAttack(): boolean {
-    return this.scene.time.now > this.nextFiring
+    return this.scene.time.now > this.nextFiring && !this.isDying
   }
 
   die() {
     this.body.checkCollision.none = true
     this.body.setVelocity(0, 0)
+    this.isDying = true
     this.scene.add.tween({
       targets: this,
       duration: 1000,
