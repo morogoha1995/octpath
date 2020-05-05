@@ -6,7 +6,8 @@ type CharacterStatus = {
   firingSpeed: number
 }
 
+
 export {
   ItemContent,
-  CharacterStatus
+  CharacterStatus,
 }

@@ -8,7 +8,7 @@ class Character extends Collidable {
   private velocity = 200
   private nextFiring = 0
   private bulletVelocityY = 300
-  private status: any = {
+  private status: CharacterStatus = {
     firingSpeed: 0,
     scatter: 0,
     enlarge: 0,
@@ -100,7 +100,11 @@ class Character extends Collidable {
     return this.hp <= 0
   }
 
-  getStatus(): CharacterStatus {
+  getStatus(key: ItemContent): number {
+    return this.status[key]
+  }
+
+  getAllStatus(): CharacterStatus {
     return this.status
   }
 }

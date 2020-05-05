@@ -8,6 +8,7 @@ import { Shark } from "../objects/shark"
 import { Squid } from "../objects/squid"
 import { Item } from "../objects/item"
 import { SoundBtn } from "../objects/soundBtn"
+import { StatusDisplay } from "../objects/statusDisplay"
 
 class Game extends Phaser.Scene {
   private character!: Character
@@ -16,6 +17,7 @@ class Game extends Phaser.Scene {
   private enemyBullets!: Phaser.GameObjects.Group
   private items!: Phaser.GameObjects.Group
   private touchPanel!: TouchPanel
+  private status!: StatusDisplay
   private isPlaying = true
   private difficulty = 1
   private nextSpawnEnemy = 0
@@ -33,6 +35,7 @@ class Game extends Phaser.Scene {
     this.enemyBullets = this.add.group({ runChildUpdate: true })
     this.items = this.add.group({ runChildUpdate: true })
     this.touchPanel = new TouchPanel(this)
+    this.status = new StatusDisplay(this, this.character.getAllStatus())
 
     this.physics.add.overlap(this.character, this.enemyBullets, this.hitEnemyBulletsToCharacter, undefined, this)
     this.physics.add.overlap(this.characterBullets, this.enemies, this.hitCharacterBulletsToEnemy, undefined, this)
@@ -56,8 +59,12 @@ class Game extends Phaser.Scene {
     this.updateEnemies()
   }
 
-  private getItem(_: any, item: any) {
-    this.character.upgrade(item.getContent())
+  private getItem(c: any, item: any) {
+    const itemContent = item.getContent()
+
+    c.upgrade(itemContent)
+    this.status.setStatus(itemContent, c.getStatus(itemContent))
+
     item.destroy()
   }
 
