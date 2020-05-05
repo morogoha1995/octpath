@@ -1,5 +1,4 @@
 import { CharacterStatus } from "../../types/item"
-import { WIDTH } from "../constants"
 
 class StatusDisplay {
   currentStatusImg: any = {}
@@ -22,7 +21,7 @@ class StatusDisplay {
     }
   }
 
-  setStatus(key: string, currentStatus: number) {
+  update(key: string, currentStatus: number) {
     this.currentStatusImg[key].setTexture(`${currentStatus}`)
   }
 }

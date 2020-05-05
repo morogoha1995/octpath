@@ -6,6 +6,7 @@ class Enemy extends Collidable {
   protected speed = 60
   protected bulletSpeed = 100
   protected firingInterval = 1800
+  protected score = 0
   private nextFiring = 0
 
   constructor(scene: Phaser.Scene, texture: string) {
@@ -37,6 +38,10 @@ class Enemy extends Collidable {
       alpha: 0,
       onComplete: () => this.destroy()
     })
+  }
+
+  getScore(): number {
+    return this.score
   }
 }
 

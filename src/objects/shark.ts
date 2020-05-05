@@ -8,6 +8,7 @@ class Shark extends Enemy {
     this.speed = 120
     this.bulletSpeed = 50
     this.firingInterval = 2400
+    this.score = 200
   }
 
   attack(characterX: number, characterY: number): Bullet {

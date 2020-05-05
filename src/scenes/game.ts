@@ -9,6 +9,7 @@ import { Squid } from "../objects/squid"
 import { Item } from "../objects/item"
 import { SoundBtn } from "../objects/soundBtn"
 import { StatusDisplay } from "../objects/statusDisplay"
+import { Score } from "../objects/score"
 
 class Game extends Phaser.Scene {
   private character!: Character
@@ -17,6 +18,7 @@ class Game extends Phaser.Scene {
   private enemyBullets!: Phaser.GameObjects.Group
   private items!: Phaser.GameObjects.Group
   private touchPanel!: TouchPanel
+  private score!: Score
   private status!: StatusDisplay
   private isPlaying = true
   private difficulty = 1
@@ -35,6 +37,7 @@ class Game extends Phaser.Scene {
     this.enemyBullets = this.add.group({ runChildUpdate: true })
     this.items = this.add.group({ runChildUpdate: true })
     this.touchPanel = new TouchPanel(this)
+    this.score = new Score(this)
     this.status = new StatusDisplay(this, this.character.getAllStatus())
 
     this.physics.add.overlap(this.character, this.enemyBullets, this.hitEnemyBulletsToCharacter, undefined, this)
@@ -63,7 +66,7 @@ class Game extends Phaser.Scene {
     const itemContent = item.getContent()
 
     c.upgrade(itemContent)
-    this.status.setStatus(itemContent, c.getStatus(itemContent))
+    this.status.update(itemContent, c.getStatus(itemContent))
 
     item.destroy()
   }
@@ -95,7 +98,7 @@ class Game extends Phaser.Scene {
   private upDefficulty() {
     this.items.add(new Item(this))
 
-    if (this.difficulty < 3)
+    if (this.difficulty < 5)
       this.difficulty++
   }
 
@@ -119,23 +122,29 @@ class Game extends Phaser.Scene {
   }
 
   private calcNextSpawnEnemy() {
-    this.nextSpawnEnemy = this.time.now + Math.floor(3000 / this.difficulty)
+    this.nextSpawnEnemy = this.time.now + Math.floor(5000 / this.difficulty)
   }
 
   private createTexts() {
+    const depth = 19
+
     const titleText = new TitleText(this, 120, "GAME OVER", "teal")
+      .setDepth(depth)
 
     const btnY = 200
     new TextBtn(this, 120, btnY, "もう一回", "blue")
       .on("pointerdown", () => this.restart(titleText))
+      .setDepth(depth)
 
     const soundBtn = new SoundBtn(this, btnY, this.isMute)
       .on("pointerdown", () => {
         this.isMute = !this.isMute
         soundBtn.switch(this.isMute)
       })
+      .setDepth(depth)
 
     new TextBtn(this, WIDTH / 2, 300, "ツイートする", "royalblue")
+      .setDepth(depth)
   }
 
   private restart(titleText: TitleText) {
@@ -166,6 +175,7 @@ class Game extends Phaser.Scene {
   private hitCharacterBulletsToEnemy(cb: any, e: any) {
     cb.destroy()
     e.die()
+    this.score.update(e.getScore())
   }
 
   private start() {
@@ -174,6 +184,9 @@ class Game extends Phaser.Scene {
       loop: true,
       callback: () => this.upDefficulty()
     })
+
+    this.difficulty = 1
+    this.nextSpawnEnemy = 0
 
     this.isPlaying = true
   }
