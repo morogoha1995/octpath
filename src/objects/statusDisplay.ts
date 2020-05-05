@@ -1,7 +1,7 @@
 import { CharacterStatus } from "../../types/item"
 
 class StatusDisplay {
-  currentStatusImg: any = {}
+  private currentStatusImg: any = {}
 
   constructor(scene: Phaser.Scene, status: CharacterStatus) {
     let x = 150

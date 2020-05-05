@@ -1,10 +1,10 @@
 import { WIDTH } from "./../constants"
 
 class Score {
-  x = WIDTH / 2
-  y = 30
-  current = 0
-  display: Phaser.GameObjects.Group
+  private x = WIDTH / 2
+  private y = 30
+  private current = 0
+  private display: Phaser.GameObjects.Group
 
   constructor(scene: Phaser.Scene) {
     this.display = scene.add.group()
