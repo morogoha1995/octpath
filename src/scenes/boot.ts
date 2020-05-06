@@ -6,7 +6,7 @@ class Boot extends Phaser.Scene {
   preload() {
     this.load
       .image("title", "assets/imgs/title.png")
-      .image("bg", "assets/imgs/bg.jpg")
+      .image("bg", "assets/imgs/bg.png")
       .image("character", "assets/imgs/character.png")
       .image("shark", "assets/imgs/shark.png")
       .image("enemy", "assets/imgs/enemy.png")
