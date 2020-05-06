@@ -29,6 +29,8 @@ class Title extends Phaser.Scene {
   }
 
   private start(titleText: Phaser.GameObjects.Text) {
+    this.sound.mute = this.isMute
+    this.sound.play("start")
     this.add.tween({
       targets: titleText,
       alpha: 0,

@@ -30,7 +30,7 @@ class Game extends Phaser.Scene {
   }
 
   create() {
-    this.add.image(0, 0, "bg").setOrigin(0).setAlpha(0.8)
+    this.add.image(0, 0, "bg").setOrigin(0)
     this.character = new Character(this)
     this.characterBullets = this.add.group({ runChildUpdate: true })
     this.enemies = this.add.group({ runChildUpdate: true })
@@ -45,6 +45,8 @@ class Game extends Phaser.Scene {
     this.physics.add.overlap(this.character, this.items, this.getItem, undefined, this)
 
     this.physics.world.setBounds(0, 0, WIDTH, HEIGHT)
+
+    this.sound.mute = this.isMute
 
     this.start()
   }
@@ -63,6 +65,8 @@ class Game extends Phaser.Scene {
   }
 
   private getItem(c: any, item: any) {
+    this.sound.play("getItem")
+
     const itemContent = item.getContent()
 
     if (c.upgrade(itemContent))
@@ -150,6 +154,8 @@ class Game extends Phaser.Scene {
   }
 
   private restart(titleText: TitleText) {
+    this.sound.mute = this.isMute
+    this.sound.play("start")
     this.add.tween({
       targets: titleText,
       alpha: 0,
@@ -157,10 +163,6 @@ class Game extends Phaser.Scene {
       repeat: 3,
       onComplete: () => this.scene.restart({ isMute: this.isMute })
     })
-  }
-
-  private switchMute() {
-
   }
 
   private hitEnemyBulletsToCharacter(c: any, eb: any) {
@@ -175,6 +177,7 @@ class Game extends Phaser.Scene {
   }
 
   private hitCharacterBulletsToEnemy(cb: any, e: any) {
+    this.sound.play("attack")
     cb.destroy()
     e.die()
     this.score.add(e.getScore())
@@ -194,6 +197,7 @@ class Game extends Phaser.Scene {
   }
 
   private gameover() {
+    this.sound.play("dead")
     this.isPlaying = false
     this.physics.pause()
     this.time.removeAllEvents()

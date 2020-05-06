@@ -17,7 +17,7 @@ class TouchPanel {
 
   constructor(scene: Phaser.Scene) {
     scene.add
-      .circle(this.x, this.y, 40, 0xDDDDDD, 0.6)
+      .circle(this.x, this.y, 40, 0xFFFFFF, 0.6)
       .setInteractive()
       .on("pointermove", (e: PointerEvent) => this.determineDirection(e.x, e.y))
       .on("pointerout", () => {

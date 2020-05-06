@@ -30,6 +30,10 @@ class Boot extends Phaser.Scene {
       .image("8", "assets/imgs/numbers/8.png")
       .image("9", "assets/imgs/numbers/9.png")
       .image("0", "assets/imgs/numbers/0.png")
+      .audio("getItem", "assets/audios/get-item.mp3")
+      .audio("attack", "assets/audios/attack.mp3")
+      .audio("start", "assets/audios/start.mp3")
+      .audio("dead", "assets/audios/dead.mp3")
   }
 
   create() {
