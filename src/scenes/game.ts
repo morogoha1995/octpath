@@ -150,7 +150,7 @@ class Game extends Phaser.Scene {
       })
       .setDepth(depth)
 
-    new TextBtn(this, WIDTH / 2, 300, "ツイートする", "royalblue")
+    new TextBtn(this, WIDTH / 2, 300, "ツイートする", "#00acee")
       .setDepth(depth)
       .on("pointerdown", () => this.tweet())
   }
