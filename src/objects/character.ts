@@ -70,20 +70,6 @@ class Character extends Collidable {
     this.body.setVelocity(vx, vy)
   }
 
-  damaged() {
-    this.hp--
-    this.isHurting = true
-
-    this.scene.add.tween({
-      targets: this,
-      duration: 80,
-      alpha: 0,
-      repeat: 4,
-      yoyo: true,
-      onComplete: () => this.isHurting = false
-    })
-  }
-
   getIsHurting(): boolean {
     return this.isHurting
   }
@@ -96,10 +82,6 @@ class Character extends Collidable {
 
     this.status[itemContent] += 1
     return true
-  }
-
-  isDead(): boolean {
-    return this.hp <= 0
   }
 
   private isMaxGrade(key: ItemContent): boolean {

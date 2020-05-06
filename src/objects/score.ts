@@ -16,6 +16,10 @@ class Score {
     this.setDisplay(this.current)
   }
 
+  getCurrent(): number {
+    return this.current
+  }
+
   private setDisplay(newScore: number) {
     this.display.clear(true, true)
 

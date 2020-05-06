@@ -24,6 +24,7 @@ class Game extends Phaser.Scene {
   private difficulty = 1
   private nextSpawnEnemy = 0
   private isMute = false
+  private elapsedTime = 0
 
   constructor() {
     super({ key: "game" })
@@ -151,6 +152,16 @@ class Game extends Phaser.Scene {
 
     new TextBtn(this, WIDTH / 2, 300, "ツイートする", "royalblue")
       .setDepth(depth)
+      .on("pointerdown", () => this.tweet())
+  }
+
+  private tweet() {
+    const url = "https://meisoudev.com/games/octpath/"
+    const text = `経過時間: ${this.elapsedTime}秒, スコア: ${this.score.getCurrent()}を記録しました。`
+
+    const tweetURL = `https://twitter.com/intent/tweet?text=${text}&url=${url}&hashtags=octPath`
+
+    window.open(tweetURL, "blank")
   }
 
   private restart(titleText: TitleText) {
@@ -166,14 +177,8 @@ class Game extends Phaser.Scene {
   }
 
   private hitEnemyBulletsToCharacter(c: any, eb: any) {
-    if (c.getIsHurting())
-      return
-
-    eb.destroy()
-    c.damaged()
-
-    if (c.isDead())
-      this.gameover()
+    this.sound.play("dead")
+    this.gameover()
   }
 
   private hitCharacterBulletsToEnemy(cb: any, e: any) {
@@ -190,9 +195,15 @@ class Game extends Phaser.Scene {
       callback: () => this.upDefficulty()
     })
 
+    this.time.addEvent({
+      delay: 1000,
+      loop: true,
+      callback: () => this.elapsedTime++
+    })
+
     this.difficulty = 1
     this.nextSpawnEnemy = 0
-
+    this.elapsedTime = 0
     this.isPlaying = true
   }
 
