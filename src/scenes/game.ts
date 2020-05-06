@@ -135,10 +135,10 @@ class Game extends Phaser.Scene {
   private createTexts() {
     const depth = 19
 
-    const titleText = new TitleText(this, 120, "GAME OVER", "teal")
+    const titleText = new TitleText(this, 120, "GAME OVER", "crimson")
       .setDepth(depth)
 
-    const btnY = 200
+    const btnY = 210
     new TextBtn(this, 120, btnY, "もう一回", "blue")
       .on("pointerdown", () => this.restart(titleText))
       .setDepth(depth)

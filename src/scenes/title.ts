@@ -15,9 +15,18 @@ class Title extends Phaser.Scene {
   }
 
   private createTexts() {
-    const titleText = new TitleText(this, 60, "octPath", "skyblue")
+    const titleText = new TitleText(this, 290, "octPath", "orange")
 
-    const btnY = 300
+    this.add.tween({
+      targets: titleText,
+      duration: 600,
+      y: titleText.y - 5,
+      scale: 0.9,
+      repeat: -1,
+      yoyo: true,
+    })
+
+    const btnY = 350
     new TextBtn(this, 120, btnY, "スタート", "blue")
       .on("pointerdown", () => this.start(titleText))
 
